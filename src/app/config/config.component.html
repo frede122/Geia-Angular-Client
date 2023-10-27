@@ -1,0 +1,34 @@
+<h2>Configurações de Perfil de Usuário</h2>
+<div class="container">
+    <mat-accordion class="example-headers-align" multi>
+
+        <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Meu Perfil
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <app-perfil></app-perfil>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Dados do Usuário
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <app-credential></app-credential>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Contas Bancarias
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <!-- <app-conta-bancaria></app-conta-bancaria> -->
+        </mat-expansion-panel>
+
+    </mat-accordion>
+
+</div>

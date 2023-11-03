@@ -14,11 +14,18 @@ import { ConfirmPasswordComponent } from './components/confirm-password/confirm-
 import {MatDialogModule} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import {MatSelectModule} from '@angular/material/select';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import { PersonFormComponent } from './components/forms/person-form/person-form.component';
+
+
 @NgModule({
   declarations: [
     MenuComponent,
-    ConfirmPasswordComponent
+    ConfirmPasswordComponent,
+    PersonFormComponent
   ],
   imports: [
     MatFormFieldModule, 
@@ -33,12 +40,17 @@ import { FormsModule } from '@angular/forms';
     MatButtonModule,
     MatExpansionModule,
     MatListModule,
+    MatDatepickerModule,
+    MatSelectModule,
+    MatAutocompleteModule,
+    ReactiveFormsModule,
     CommonModule,
     RouterModule
   ],
   exports:[
     MenuComponent,
-    ConfirmPasswordComponent
+    ConfirmPasswordComponent,
+    PersonFormComponent
   ]
 })
 export class SharedModule { }

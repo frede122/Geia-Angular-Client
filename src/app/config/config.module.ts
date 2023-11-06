@@ -18,7 +18,7 @@ import { PerfilComponent } from './perfil/perfil.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SharedModule } from '../shared/shared.module';
 import { MatNativeDateModule } from '@angular/material/core';
-
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 @NgModule({
@@ -40,6 +40,7 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatInputModule,
     MatButtonModule,
     MatAutocompleteModule,
+    MatSnackBarModule,
     SharedModule,
     CommonModule,
     RouterModule,

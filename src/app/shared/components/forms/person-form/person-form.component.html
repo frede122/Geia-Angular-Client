@@ -9,7 +9,7 @@
         </mat-form-field>
         <mat-form-field class="year "appearance="outline">
             <mat-label>Data de Nascimento</mat-label>
-            <input matInput [matDatepicker]="picker">
+            <input matInput [matDatepicker]="picker" formControlName="birth_date">
             <mat-hint>DD/MM/AAAA</mat-hint>
             <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker touchUi #picker></mat-datepicker>
@@ -81,10 +81,4 @@
 
 
 
-    <div class="button-container">
-        <button mat-flat-button color="green" (click)="update()">
-            <mat-icon>check</mat-icon> Salvar
-        </button>
-
-    </div>
 </form>

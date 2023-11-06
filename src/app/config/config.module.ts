@@ -1,15 +1,15 @@
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { RouterModule } from '@angular/router';
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {MatIconModule} from '@angular/material/icon';
-import {MatExpansionModule} from '@angular/material/expansion';
-import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {MatSelectModule} from '@angular/material/select';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import { RouterModule } from '@angular/router';
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {MatExpansionModule} from '@angular/material/expansion';
 
 import { ConfigComponent } from './config.component';
 import { CredentialComponent } from './credential/credential.component';
@@ -33,18 +33,18 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatDialogModule,
     MatDatepickerModule,
     MatNativeDateModule, 
-    SharedModule,
-    CommonModule,
-    RouterModule,
-    ReactiveFormsModule,
     MatSelectModule,
-    FormsModule,
     MatIconModule,
     MatExpansionModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
     MatAutocompleteModule,
+    SharedModule,
+    CommonModule,
+    RouterModule,
+    ReactiveFormsModule,
+    FormsModule,
     HttpClientModule
     
   ],

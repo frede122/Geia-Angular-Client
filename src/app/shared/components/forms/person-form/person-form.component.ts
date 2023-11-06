@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, OnChanges, OnDestroy, Input } from '@angular/core';
 import { Subscription, Observable, startWith, map } from 'rxjs';
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { UserDetailsModel } from 'src/app/models/person/user/user-details.model';
@@ -16,25 +16,19 @@ export interface State {
   templateUrl: './person-form.component.html',
   styleUrls: ['./person-form.component.scss']
 })
-export class PersonFormComponent {
+export class PersonFormComponent implements OnInit, OnDestroy {
 
-  hide = true;
-  isEdit = false;
+  @Input('dataUser') user?: UserDetailsModel;
+  @Output() formDataEvent = new EventEmitter<any>();
   formPerfil: FormGroup;
   // unsu : Subscription;
-
   filteredStates: Observable<State[]>;
 
-  public user: UserDetailsModel;
-  constructor(
-    private service: AuthService,
-    public message: MessagesService,
-  ) {
+  constructor( public message: MessagesService ) {
 
-    this.user = new UserDetailsModel();
-    this.loadData();
     this.formPerfil = new FormGroup({
       name: new FormControl('', Validators.required),
+      birth_date: new FormControl('', Validators.required),
       cep: new FormControl('', [Validators.required, Validators.min(10000000), Validators.max(99999999)]),
       states: new FormControl('', Validators.required),
       rua: new FormControl('', Validators.required),
@@ -80,14 +74,20 @@ export class PersonFormComponent {
       flag: 'https://upload.wikimedia.org/wikipedia/commons/f/f7/Flag_of_Texas.svg',
     },
   ];
-    
+
 
   ngOnInit(): void {
-    
+    this.sendData();
   }
 
   ngOnDestroy(): void {
     // this.unsu?.unsubscribe();
+  }
+
+
+  ngOnChanges(): void {
+    this.loadData();
+
   }
 
   private _filterStates(value: string): State[] {
@@ -96,47 +96,33 @@ export class PersonFormComponent {
     return this.states.filter(state => state.name.toLowerCase().includes(filterValue));
   }
 
-  loadData() {
-
-    this.service.getMe().subscribe((data : UserDetailsModel) => {
-      this.user = {
-        id: data.id,
-        name: data.name,
-        address: data.address,
-      };
-  
-      
-      console.log(data)
-      this.formPerfil.controls['name'].setValue(data.name);
-      this.formPerfil.controls['cep'].setValue(data.address.cep);
-      this.formPerfil.controls['states'].setValue(data.address.city.state.name);
-      this.formPerfil.controls['rua'].setValue(data.address.rua);
-      this.formPerfil.controls['city'].setValue(data.address.city.name);
-      this.formPerfil.controls['number'].setValue(data.address.number);
-      this.formPerfil.controls['neighborhood'].setValue(data.address.neighborhood);
-   
+  sendData() {
+    this.formPerfil.valueChanges.subscribe((value) => {
+      this.formDataEvent.emit(value);
     });
   }
 
+  loadData() {
+    if (this.user) {
+      this.formPerfil.controls['name'].setValue(this.user.name);
+      this.formPerfil.controls['cep'].setValue(this.user.address.cep);
+      this.formPerfil.controls['birth_date'].setValue("2000-01-01");
+      this.formPerfil.controls['states'].setValue(this.user.address.city.state.name);
+      this.formPerfil.controls['rua'].setValue(this.user.address.rua);
+      this.formPerfil.controls['city'].setValue(this.user.address.city.name);
+      this.formPerfil.controls['number'].setValue(this.user.address.number);
+      this.formPerfil.controls['neighborhood'].setValue(this.user.address.neighborhood);
+    }
+  }
+
   compareObjects(o1: any, o2: any) {
-    if( o1.id == o2.id )
-    return true;
+    if (o1.id == o2.id)
+      return true;
     else return false
   }
 
 
 
-  update() {
-    console.log(JSON.stringify(this.user))
-    
-    this.user.name =  this.formPerfil.value.name;
-    this.user.address.cep =  this.formPerfil.value.cep;
-    this.user.address.neighborhood =  this.formPerfil.value.neighborhood;
-    this.user.address.number =  this.formPerfil.value.number;
-    this.user.address.city_id = this.user.address.city.id;
-    this.user.address.neighborhood = this.formPerfil.value.valueneighborhood;
-    this.user.address.rua = this.formPerfil.value.rua;
-    this.service.update(this.user).subscribe(() => alert("ok"));
-  }
+
 
 }

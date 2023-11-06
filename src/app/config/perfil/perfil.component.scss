@@ -1,45 +1,3 @@
-.cadastro {
-  max-width: 1200px;
-  width: 80%;
-}
-
-mat-form-field {
-  margin: 5px 15px;
-}
-
-.name {
-  width: 65%;
-}
-.year {
-  width: 25%;
-}
-.city {
-  width: 55%;
-  max-width: 600px;
-}
-.neighborhood {
-  width: 40%;
-  max-width: 430px;
-}
-
-.address {
-  width: 70%;
-  max-width: 600px;
-}
-.number {
-  width: 25%;
-  max-width: 160px;
-}
-
-.email {
-  width: 30%;
-}
-
-.name mat-icon {
-  font-size: 25px;
-}
-
-
 .button-container {
   width: 100%;
   display: flex;
@@ -50,35 +8,7 @@ button {
   width: 260px;
 }
 
-h2 {
-  font-size: 35px;
-  margin-top: 50px;
-  color: rgb(100, 100, 100);
-}
-
 .mat-accordion {
   width: 50%;
-  /* display: flex; */
   justify-content: center;
-}
-
-.state-container {
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-}
-
-.state-description {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.state-option-img {
-  vertical-align: middle;
-  margin-right: 8px;
-}
-
-[dir='rtl'] .state-option-img {
-  margin-right: 0;
-  margin-left: 8px;
 }

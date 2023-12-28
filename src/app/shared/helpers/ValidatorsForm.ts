@@ -1,4 +1,4 @@
-import { FormControl, FormGroup, AbstractControl, ValidationErrors } from '@angular/forms';
+import { FormControl, FormGroup, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 export class ValidatorsForm {
 
@@ -27,11 +27,10 @@ export class ValidatorsForm {
 
   static cepValidator() {
     return (control: AbstractControl): ValidationErrors | null => {
-
       const cep = control.value;
-      if (cep && cep !== '') {
+      if (cep) {
         const validacep = /^[0-9]{8}$/;
-        return validacep.test(cep) ? null : { cepInvalido: true };
+        return validacep.test(cep) ? null : { cep: true };
       }
       return null;
     }

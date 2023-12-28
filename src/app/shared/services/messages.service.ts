@@ -15,11 +15,12 @@ export class MessagesService {
       min: 'Campo não atingiu valor mínimo de caracteres',
       max: 'Campo atingiu valor máximo de caracteres',
       email: 'Não é um E-mail válido',
+      cep: 'Não é um CEP válido',
     };
   
     const error = Object.keys(errorMessages).find((errorName) => control?.hasError(errorName));
 
-    return error ? errorMessages[error] : '';
+    return error ? errorMessages[error] : 'campo invalido';
 
   }
 

@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { BaseService } from './base-service.service';
+import { BaseReadService } from './base-read.service';
 
-describe('BaseServiceService', () => {
-  let service: BaseService<any>;
+describe('BaseReadOnlyService', () => {
+  let service: BaseReadService<any>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(BaseService);
+    service = TestBed.inject(BaseReadService);
   });
 
   it('should be created', () => {

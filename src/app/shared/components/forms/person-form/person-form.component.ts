@@ -2,10 +2,20 @@ import { Component, EventEmitter, Output, OnInit, OnChanges, OnDestroy, Input } 
 import { Subscription, Observable, startWith, map } from 'rxjs';
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { UserDetailsModel } from 'src/app/models/person/user/user-details.model';
-import { AuthService } from 'src/app/shared/services/auth.service';
 import { MessagesService } from 'src/app/shared/services/messages.service';
+import { StateModel } from 'src/app/models/addreess/state.model';
+import { CityModel } from 'src/app/models/addreess/city.model';
+import * as moment from 'moment';
+import { StateService } from 'src/app/services/address/state.service';
+import { CityService } from 'src/app/services/address/city.service';
+import { ValidatorsForm } from 'src/app/shared/helpers/ValidatorsForm';
 
 export interface State {
+  flag: string;
+  name: string;
+  population: string;
+}
+export interface City {
   flag: string;
   name: string;
   population: string;
@@ -19,66 +29,111 @@ export interface State {
 export class PersonFormComponent implements OnInit, OnDestroy {
 
   @Input('dataUser') user?: UserDetailsModel;
-  @Output() formDataEvent = new EventEmitter<any>();
+  @Output() formDataEvent = new EventEmitter<UserDetailsModel>();
+  state: StateModel[] = [];
+  citys: CityModel[] = [];
+
   formPerfil: FormGroup;
-  // unsu : Subscription;
-  filteredStates: Observable<State[]>;
-
-  constructor( public message: MessagesService ) {
-
+  filteredStatesOptions?: Observable<StateModel[]>;
+  filteredCitysOptions?: Observable<CityModel[]>;
+  
+  constructor(
+    public message: MessagesService,
+    private stateService: StateService,
+    private cityService: CityService
+  ) {
     this.formPerfil = new FormGroup({
       name: new FormControl('', Validators.required),
       birth_date: new FormControl('', Validators.required),
-      cep: new FormControl('', [Validators.required, Validators.min(10000000), Validators.max(99999999)]),
-      states: new FormControl('', Validators.required),
+      cep: new FormControl('', [Validators.required, ValidatorsForm.cepValidator()]),
+      state: new FormControl('', Validators.required),
       rua: new FormControl('', Validators.required),
       city: new FormControl('', Validators.required),
       number: new FormControl('', Validators.required),
       neighborhood: new FormControl('', Validators.required),
-
     });
-
-
-    this.filteredStates = this.formPerfil.controls['states'].valueChanges.pipe(
-      startWith(''),
-      map(state => (state ? this._filterStates(state) : this.states.slice())),
-    );
-
+    
   }
-
-
-
-  states: State[] = [
-    {
-      name: 'Arkansas',
-      population: '2.978M',
-      // https://commons.wikimedia.org/wiki/File:Flag_of_Arkansas.svg
-      flag: 'https://upload.wikimedia.org/wikipedia/commons/9/9d/Flag_of_Arkansas.svg',
-    },
-    {
-      name: 'California',
-      population: '39.14M',
-      // https://commons.wikimedia.org/wiki/File:Flag_of_California.svg
-      flag: 'https://upload.wikimedia.org/wikipedia/commons/0/01/Flag_of_California.svg',
-    },
-    {
-      name: 'Florida',
-      population: '20.27M',
-      // https://commons.wikimedia.org/wiki/File:Flag_of_Florida.svg
-      flag: 'https://upload.wikimedia.org/wikipedia/commons/f/f7/Flag_of_Florida.svg',
-    },
-    {
-      name: 'Texas',
-      population: '27.47M',
-      // https://commons.wikimedia.org/wiki/File:Flag_of_Texas.svg
-      flag: 'https://upload.wikimedia.org/wikipedia/commons/f/f7/Flag_of_Texas.svg',
-    },
-  ];
-
-
+  
   ngOnInit(): void {
+    this.loadStates();
+    this.filteredCitysOptions = this.filterOptionCity();
+    this.filteredStatesOptions = this.filterOptionState();
     this.sendData();
+    this.changeState();
   }
+
+  filterOptionCity(): Observable<CityModel[]> {
+    return this.formPerfil.controls['city'].valueChanges.pipe(startWith(''),
+      map(value => {
+        const name = typeof value === 'string' ? value : value?.name;
+        return name ? this._filterCity(name as string) : this.citys.slice();
+      }),
+    );
+  }
+  private _filterCity(name: string): CityModel[] {
+    const filterValue = name.toLowerCase();
+    return this.citys.filter(option => option.name.toLowerCase().includes(filterValue));
+  }
+
+  filterOptionState(): Observable<StateModel[]> {
+    return this.formPerfil.controls['state'].valueChanges.pipe(startWith(''),
+      map(value => {
+        const name = typeof value === 'string' ? value : value?.name;
+        return name ? this._filterState(name as string) : this.state.slice();
+      }),
+    );
+  }
+
+  private _filterState(name: string): StateModel[] {
+    const filterValue = name.toLowerCase();
+    return this.state.filter(option => option.name.toLowerCase().includes(filterValue));
+  }
+
+  filterObs(control: string, array: any[],): Observable<any[]> {
+    return this.formPerfil.controls[control].valueChanges.pipe(startWith(''),
+      map(value => {
+        const name = typeof value === 'string' ? value : value?.name;
+        return name ? this._filter(array, name as string) : array.slice();
+      }),
+    );
+  }
+  private _filter(array: any[], name: string): any[] {
+    const filterValue = name.toLowerCase();
+    return array.filter(option => option.name.toLowerCase().includes(filterValue));
+  }
+
+  changeState() {
+    this.formPerfil.controls['state'].valueChanges.subscribe((data) => {
+      if (typeof data != 'string') {
+        this.loadCity(data.id)
+        
+      }
+    });
+  }
+
+  loadCity(id: number) {
+    this.cityService.getByStateId(id).subscribe((value) => {
+      this.citys = value;
+      let city = this.formPerfil.value.city;
+      if(typeof city == "string" || city.state.id != id)
+        this.formPerfil.controls['city'].setValue('');
+    });
+  }
+
+  loadStates() {
+    this.stateService.getAll().subscribe((value) => {
+      this.state = value;
+    });
+  }
+
+
+
+  displayFn(value: any): string {
+    return value && value.name ? value.name : value;
+  }
+
+
 
   ngOnDestroy(): void {
     // this.unsu?.unsubscribe();
@@ -87,29 +142,40 @@ export class PersonFormComponent implements OnInit, OnDestroy {
 
   ngOnChanges(): void {
     this.loadData();
-
-  }
-
-  private _filterStates(value: string): State[] {
-    const filterValue = value.toLowerCase();
-
-    return this.states.filter(state => state.name.toLowerCase().includes(filterValue));
   }
 
   sendData() {
     this.formPerfil.valueChanges.subscribe((value) => {
-      this.formDataEvent.emit(value);
+      const users: UserDetailsModel = {
+        id: this.user?.address.id || 0,
+        name: value.name,
+        birth_date: moment(value.birth_date).format('YYYY-MM-DD'),
+        address: {
+          id: this.user?.address.id || 0,
+          cep: value.cep,
+          city: new CityModel(),
+          city_id: value.city.id || 0,
+          neighborhood: value.neighborhood,
+          rua: value.rua,
+          number: value.number
+        }
+      }
+
+
+      this.formDataEvent.emit(users);
     });
+
+
   }
 
   loadData() {
     if (this.user) {
       this.formPerfil.controls['name'].setValue(this.user.name);
       this.formPerfil.controls['cep'].setValue(this.user.address.cep);
-      this.formPerfil.controls['birth_date'].setValue("2000-01-01");
-      this.formPerfil.controls['states'].setValue(this.user.address.city.state.name);
+      this.formPerfil.controls['birth_date'].setValue(this.user.birth_date);
+      this.formPerfil.controls['state'].setValue(this.user.address.city.state);
       this.formPerfil.controls['rua'].setValue(this.user.address.rua);
-      this.formPerfil.controls['city'].setValue(this.user.address.city.name);
+      this.formPerfil.controls['city'].setValue(this.user.address.city);
       this.formPerfil.controls['number'].setValue(this.user.address.number);
       this.formPerfil.controls['neighborhood'].setValue(this.user.address.neighborhood);
     }
@@ -120,9 +186,5 @@ export class PersonFormComponent implements OnInit, OnDestroy {
       return true;
     else return false
   }
-
-
-
-
 
 }

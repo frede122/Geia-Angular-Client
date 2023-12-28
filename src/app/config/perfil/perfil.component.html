@@ -1,5 +1,7 @@
 <div>
-    <person-form [dataUser]="user" (formDataEvent)="receiveFormData($event)"></person-form>
+    <person-form 
+    [dataUser]="user" 
+    (formDataEvent)="receiveFormData($event)"></person-form>
     <div class="button-container">
         <button mat-flat-button color="green" (click)="update()">
             <mat-icon>check</mat-icon> Salvar

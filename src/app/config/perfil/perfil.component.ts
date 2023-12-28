@@ -5,6 +5,7 @@ import { UserDetailsModel } from 'src/app/models/person/user/user-details.model'
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 
+
 export interface State {
   flag: string;
   name: string;
@@ -22,6 +23,7 @@ export class PerfilComponent {
 
   public user: UserDetailsModel;
   public userData?: UserDetailsModel;
+
   constructor(
     private service: AuthService,
     public message: MessagesService,
@@ -50,8 +52,12 @@ export class PerfilComponent {
         birth_date: data.birth_date,
         address: data.address,
       };
+      const id = data.address.city.state.id;
+
     });
   }
+
+
 
   compareObjects(o1: any, o2: any) {
     if (o1.id == o2.id)
@@ -59,33 +65,22 @@ export class PerfilComponent {
     else return false
   }
 
-  receiveFormData(value: any) {
-    if(this.userData){
-      // address.city_id
-      this.userData.address.cep = value.cep;
-      this.userData.address.city_id = this.user.address.city.id;
-      this.userData.address.neighborhood = value.neighborhood;
-      this.userData.address.rua = value.rua;
-      this.userData.address.number = value.number;
-      this.userData.name = value.name;
-      this.userData.birth_date = value.birth_date;
-    }
+  receiveFormData(value: UserDetailsModel) {
+    this.userData = value
   }
 
+
+
   update() {
-    if (this.userData){
-      console.log(JSON.stringify(this.userData))
-      // console.log(this.userData)
+    if (this.userData) {
       this.service.update(this.userData).subscribe((data) => {
         this.openSnackBar("Salvo com sucesso", "Fechar")
       });
-
     }
-
   }
 
   openSnackBar(message: string, action: string) {
-    this._snackBar.open(message, action, { 
+    this._snackBar.open(message, action, {
       duration: 4000,
       horizontalPosition: 'right',
       verticalPosition: 'bottom'

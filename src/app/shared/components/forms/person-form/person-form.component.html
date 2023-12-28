@@ -1,5 +1,6 @@
 <form [formGroup]="formPerfil" class="cadastro" [style.fontSize.px]="17">
     <p>
+        {{this.formPerfil.value.states?.name}}
         <mat-form-field class="name " appearance="outline">
             <mat-label>Nome Completo</mat-label>
             <input matInput placeholder="Nome" formControlName="name">
@@ -7,7 +8,7 @@
             <mat-error>{{message.getErrorMessage(formPerfil.get('name'))}}</mat-error>
             <mat-hint>Nome completo</mat-hint>
         </mat-form-field>
-        <mat-form-field class="year "appearance="outline">
+        <mat-form-field class="year " appearance="outline">
             <mat-label>Data de Nascimento</mat-label>
             <input matInput [matDatepicker]="picker" formControlName="birth_date">
             <mat-hint>DD/MM/AAAA</mat-hint>
@@ -19,7 +20,7 @@
     <p>
         <mat-form-field class="cep" appearance="outline">
             <mat-label>CEP</mat-label>
-            <input matInput type="number" #postalCode maxlength="8" placeholder="Ex: 98700-000" formControlName="cep">
+            <input matInput #postalCode maxlength="8" placeholder="Ex: 98700-000" formControlName="cep">
             <mat-icon matSuffix>signpost</mat-icon>
             <mat-error>{{message.getErrorMessage(formPerfil.get('cep'))}}</mat-error>
             <mat-hint>CEP {{postalCode.value.length}} / 8</mat-hint>
@@ -27,15 +28,13 @@
 
         <mat-form-field class="states" appearance="outline">
             <mat-label>Estado</mat-label>
-            <input matInput aria-label="State" [matAutocomplete]="auto" formControlName="states">
-            <mat-autocomplete #auto="matAutocomplete">
-                <mat-option *ngFor="let state of filteredStates | async" [value]="state.name">
+            <input type="text" matInput aria-label="State" [matAutocomplete]="auto" formControlName="state">
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                <mat-option *ngFor="let state of filteredStatesOptions | async" [value]="state">
                     <span class="state-container">
                         <img alt="" class="state-option-img" [src]="state.flag" height="25">
                         <span class="state-description">
-                            <span>{{state.name}}</span> |
-                            <br />
-                            <small>Population: {{state.population}}</small>
+                            <span>{{state.name}}</span> 
                         </span>
                     </span>
                 </mat-option>
@@ -47,11 +46,35 @@
 
         <mat-form-field class="city" appearance="outline">
             <mat-label>Cidade</mat-label>
+            <input type="text" matInput aria-label="State" [matAutocomplete]="auto2" formControlName="city">
+            <mat-autocomplete #auto2="matAutocomplete" [displayWith]="displayFn">
+                <mat-option *ngFor="let cit of filteredCitysOptions | async" [value]="cit">
+                    {{cit.name}}
+                </mat-option>
+            </mat-autocomplete>
+            <mat-icon matSuffix>outlined_flag</mat-icon>
+            <mat-error>{{message.getErrorMessage(formPerfil.get('citys'))}}</mat-error>
+            <mat-hint>Estado</mat-hint>
+        </mat-form-field>
+
+        <!-- <mat-form-field class="example-full-width">
+            <mat-label>Cidade</mat-label>
+            <input type="text" matInput formControlName="city" [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                <mat-option *ngFor="let option of filteredCitys | async" [value]="option">
+                    {{option.name}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field> -->
+
+
+        <!-- <mat-form-field class="city" appearance="outline">
+            <mat-label>Cidade</mat-label>
             <input matInput placeholder="Endereço" formControlName="city">
             <mat-icon matSuffix>location_city</mat-icon>
             <mat-error>{{message.getErrorMessage(formPerfil.get('city'))}}</mat-error>
             <mat-hint>Cidade</mat-hint>
-        </mat-form-field>
+        </mat-form-field> -->
 
         <mat-form-field class="neighborhood" appearance="outline">
             <mat-label>Bairro</mat-label>
